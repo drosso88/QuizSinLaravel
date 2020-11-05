@@ -1,0 +1,57 @@
+<div class="container">
+
+    <br>
+    <div class="progress" id="barratiempo">
+
+        <div id="tiempo" class="progress progress-bar-striped progress-bar-animated" role="progressbar"
+            style="width:0%"></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-3">
+            <h1 id="marcador"></h1>
+        </div>
+        <div class="col-6" id="preguntas"></div>
+        <div class="col-3"></div>
+    </div>
+</div>
+<script>
+    nuevaPregunta();
+
+    function nuevaPregunta(){
+    $.get('http://localhost/EjerciciosLaravel/EjemploGenialQUIZ/public/api/preguntas/' + tema,
+        function (_pregunta) {
+            pregunta=_pregunta;
+            $('#marcador').html(marcador);
+            //borro el div
+            $('#preguntas').html("");
+            //pinto botones
+            $('#preguntas').append('<button class="btn btn-block btn-dark disabled">' + pregunta.enunciado + '</button>');
+            $('#preguntas').append('<button class="btn btn-block btn-primary disabled" onclick="chequeRespuest(1)" id="1">' + pregunta.r1 + '</button>');
+            $('#preguntas').append('<button class="btn btn-block btn-primary disabled" onclick="chequeRespuest(2)" id="2">' + pregunta.r2 + '</button>');
+            $('#preguntas').append('<button class="btn btn-block btn-primary disabled" onclick="chequeRespuest(3)" id="3">' + pregunta.r3 + '</button>');
+            $('#preguntas').append('<button class="btn btn-block btn-primary disabled" onclick="chequeRespuest(4)" id="4">' + pregunta.r4 + '</button>');
+        });
+    }
+
+    function chequeRespuest(_respuesta) {
+        $('button').addClass('disabled').prop("onclick", null);
+        if (_respuesta == pregunta.correcta) {
+            $('#' + _respuesta).removeClass('btn-primary').addClass('btn-success');
+            $('#preguntas').append('<button class="btn btn-block btn-warning " onclick="sigue()"> PREGUNTA SIGUIENTE  </button>');
+        }
+        else {
+            $('#' + _respuesta).removeClass('btn-primary').addClass('btn-danger');
+            $('#' + pregunta.correcta).removeClass('btn-primary').addClass('btn-success');
+            $('#preguntas').append('<button class="btn btn-block btn-dark " onclick="pierde()"> maaaal  </button>');
+        }
+    } 
+    function sigue(){
+        marcador++;
+        nuevaPregunta();
+    }  
+    function pierde(){
+        marcador--;
+        nuevaPregunta();
+    }  
+</script>
